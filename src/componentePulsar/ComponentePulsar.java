@@ -20,6 +20,7 @@ public class ComponentePulsar extends javax.swing.JPanel {
      */
     public ComponentePulsar() {
         initComponents();
+        this.setFocusable(true);
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
