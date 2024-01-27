@@ -4,8 +4,16 @@
  */
 package componentePulsar;
 
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 /**
  *
@@ -13,6 +21,7 @@ import java.awt.event.KeyEvent;
  */
 public class ComponentePulsar extends javax.swing.JPanel {
 
+    private File rutaImagen;
     private PulsacionListener pulsacionListener;
 
     /**
@@ -20,27 +29,47 @@ public class ComponentePulsar extends javax.swing.JPanel {
      */
     public ComponentePulsar() {
         initComponents();
-        this.setFocusable(true);
-        this.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                char tecla = e.getKeyChar();
-                if (Character.toLowerCase(tecla) == 'a') {
-                    pulsacionListener.pulsacion();
-                }
+        InputMap inputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A,0),"pressedA");
+        getActionMap().put("pressedA", new AbstractAction(){
+        @Override
+        public void actionPerformed(ActionEvent e){
+            if(pulsacionListener != null){
+                pulsacionListener.pulsacion();
             }
-        });
+        }
+    });
+        this.setFocusable(true);
+        this.requestFocusInWindow(); 
     }
-    
-    public void addPulsacionListener(PulsacionListener pulsacionListener){
+
+    public void addPulsacionListener(PulsacionListener pulsacionListener) {
         this.pulsacionListener = pulsacionListener;
     }
-    
-    public void removePulsacionListener(PulsacionListener pulsacionListener){
+
+    public void removePulsacionListener(PulsacionListener pulsacionListener) {
         this.pulsacionListener = null;
     }
-            
-            
+
+    public File getRutaImagen() {
+        return rutaImagen;
+    }
+
+    public void setRutaImagen(File rutaImagen) {
+        this.rutaImagen = rutaImagen;
+        repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (rutaImagen != null && rutaImagen.exists()) {
+            //Creamos un objeto imagen a partir de la ruta que nos llega
+            ImageIcon imageIcon = new ImageIcon(rutaImagen.getAbsolutePath());
+            //Image imagenEscalada = imageIcon.getImage().getScaledInstance(getWidth(), getHeight(), Image.SCALE_DEFAULT);
+            g.drawImage(imageIcon.getImage(), 0, 0, null);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
